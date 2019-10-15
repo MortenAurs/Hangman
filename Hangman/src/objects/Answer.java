@@ -11,7 +11,7 @@ public class Answer {
 	
 
 
-
+	// Checking if letter is in the word
 	public int[] checkLetter(String guessedLetter, String word) {
 		usedLetters[letterCount] = guessedLetter;
 		letterCount++;
@@ -27,23 +27,21 @@ public class Answer {
 			matchedIndex[0] = cntMatched;
 		}
 		
-		
-		
 		// Checking if the total letters found are same length as the word
 		if(totalFound == word.length()) {
 			return null;
 		}
-		
 		return matchedIndex;
 	}
 	
+	// Setting counters and usedLetter-list to null
 	public void clearBoard() {
 		usedLetters = new String[29];
 		totalFound = 0;
 		letterCount = 0;
 	}
 
-
+	// Checking if letter has been searched before
 	public boolean checkRepeatLetter(String guessedLetter) {
 		if(usedLetters != null) {
 			for(int i = 0; i < usedLetters.length; i++) {

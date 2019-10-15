@@ -1,0 +1,106 @@
+package window;
+
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+
+import control.Control;
+
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.awt.event.ActionEvent;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import javax.swing.JList;
+
+public class AddWord extends JDialog {
+	
+	private Control control = Control.getInstance();
+	private final JPanel contentPanel = new JPanel();
+	private JTextField txtInput;
+	private ArrayList<String> wordList;
+
+	
+	/**
+	 * Create the dialog.
+	 */
+	public AddWord() {
+		setBounds(730, 350, 450, 300);
+		getContentPane().setLayout(new BorderLayout());
+		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+		getContentPane().add(contentPanel, BorderLayout.CENTER);
+		GridBagLayout gbl_contentPanel = new GridBagLayout();
+		gbl_contentPanel.columnWidths = new int[]{105, 116, 124, 0};
+		gbl_contentPanel.rowHeights = new int[]{19, 0, 0, 0};
+		gbl_contentPanel.columnWeights = new double[]{0.0, 1.0, 0.0, Double.MIN_VALUE};
+		gbl_contentPanel.rowWeights = new double[]{0.0, 0.0, 1.0, Double.MIN_VALUE};
+		contentPanel.setLayout(gbl_contentPanel);
+		
+		JLabel lblNewWord = new JLabel("Enter new word: ");
+		GridBagConstraints gbc_lblNewWord = new GridBagConstraints();
+		gbc_lblNewWord.anchor = GridBagConstraints.WEST;
+		gbc_lblNewWord.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewWord.gridx = 0;
+		gbc_lblNewWord.gridy = 0;
+		contentPanel.add(lblNewWord, gbc_lblNewWord);
+		
+		txtInput = new JTextField();
+		GridBagConstraints gbc_txtInput = new GridBagConstraints();
+		gbc_txtInput.insets = new Insets(0, 0, 5, 5);
+		gbc_txtInput.anchor = GridBagConstraints.NORTHWEST;
+		gbc_txtInput.gridx = 1;
+		gbc_txtInput.gridy = 0;
+		contentPanel.add(txtInput, gbc_txtInput);
+		txtInput.setColumns(10);
+		
+		JPanel panel = new JPanel();
+		GridBagConstraints gbc_panel = new GridBagConstraints();
+		gbc_panel.gridwidth = 2;
+		gbc_panel.fill = GridBagConstraints.BOTH;
+		gbc_panel.gridx = 0;
+		gbc_panel.gridy = 2;
+		contentPanel.add(panel, gbc_panel);
+		wordList = control.getList();
+		JList list = new JList(wordList.toArray());
+		panel.add(list);
+	
+	
+		JPanel buttonPane = new JPanel();
+		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		getContentPane().add(buttonPane, BorderLayout.SOUTH);
+		
+		JButton okButton = new JButton("OK");
+		okButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String word = txtInput.getText();
+				control.writeToFile(word);
+				JOptionPane.showMessageDialog(null, word + " has been added to the word-list");
+				
+				control.getList();
+			}
+		});
+		okButton.setActionCommand("OK");
+		buttonPane.add(okButton);
+		getRootPane().setDefaultButton(okButton);
+	
+	
+		JButton cancelButton = new JButton("Cancel");
+		cancelButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+			}
+		});
+		cancelButton.setActionCommand("Cancel");
+		buttonPane.add(cancelButton);
+		setVisible(true);
+	
+	}
+}

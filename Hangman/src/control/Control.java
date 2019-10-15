@@ -12,6 +12,7 @@ public class Control {
 	private ArrayList<String> wordList = new ArrayList<>();
 	private static Control single_instance = null; 
 	
+	// Reading from file into wordList
 	public void readFile() {
 		try {
             file = new Scanner(new File(fileName));
@@ -26,9 +27,12 @@ public class Control {
         }
 	}
 	
+	// Adding words to the word-list
 	public void addToList(String word) {
 		wordList.add(word);
 	}
+	
+	// Writing the arraylist to file
 	public void writeToFile(String word) {
 		try {
 			addToList(word);
@@ -42,10 +46,13 @@ public class Control {
 		    //exception handling left as an exercise for the reader
 		}
 	}
+	
+	// Return arraylist
 	public ArrayList<String> getList(){
 		return wordList;
 	}
 	
+	// Creating a new control object or returning an already created one.
 	public static Control getInstance() 
     { 
         if (single_instance == null) 
