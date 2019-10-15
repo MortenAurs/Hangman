@@ -10,7 +10,6 @@ public class Answer {
 	private String[] usedLetters = new String[29];
 	
 
-
 	// Checking if letter is in the word
 	public int[] checkLetter(String guessedLetter, String word) {
 		usedLetters[letterCount] = guessedLetter;

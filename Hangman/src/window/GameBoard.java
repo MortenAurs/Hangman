@@ -49,8 +49,6 @@ public class GameBoard extends JDialog {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 	
-	
-	
 		plhPanel = new JPanel();
 		plhPanel.setBounds(69, 145, 310, 35);
 		contentPane.add(plhPanel);
@@ -72,15 +70,12 @@ public class GameBoard extends JDialog {
 		lblCntWrongAnswers.setBounds(368, 30, 66, 15);
 		contentPane.add(lblCntWrongAnswers);
 		
-		
 		GridBagLayout gbl_imgPanel = new GridBagLayout();
 		gbl_imgPanel.columnWidths = new int[]{0, 0};
 		gbl_imgPanel.rowHeights = new int[]{0, 0};
 		gbl_imgPanel.columnWeights = new double[]{0.0, Double.MIN_VALUE};
 		gbl_imgPanel.rowWeights = new double[]{0.0, Double.MIN_VALUE};
 		imgPanel.setLayout(gbl_imgPanel);
-		
-		
 		
 		wordList = control.getList();
 		// Checking that the list has content
@@ -115,19 +110,16 @@ public class GameBoard extends JDialog {
 							int[] matchedIndex = answer.checkLetter(guessedLetter, word);
 							// Checks if the mached index is null. This means that user found the word and game is over
 							if(matchedIndex == null){
-								
 								answer.clearBoard();
 								removeLabels();
 								JOptionPane.showMessageDialog(null, "Congrats, you found the word!\n"
-										+ "The word was: " + word);
-																
+										+ "The word was: " + word);						
 								int randomNumber = random.nextInt(wordList.size()); 
 								word = wordList.get(randomNumber);
 								cntWrongAnswers = 0;
 								changeImg();
 								updateWrongAnswerCnt();
 								addLabels();
-								
 								
 							// Checks if the first entry in list is 0. If it is it means it didn't find the letter in the word
 							}else if (matchedIndex[0] == 0) {
@@ -157,7 +149,6 @@ public class GameBoard extends JDialog {
 					txtInput.requestFocus();
 				}
 
-				
 			});
 			btnTry.setBounds(5, 243, 436, 25);
 			contentPane.add(btnTry);
@@ -166,15 +157,12 @@ public class GameBoard extends JDialog {
 		}else {
 			JOptionPane.showMessageDialog(null, "Add something to the word-list.");
 		}
-		
 	}
 	
-	
-
+	// Removes labels when a game finishes
 	private void removeLabels() {
 		for(int i = 0; i < word.length(); i++) {
 			plhPanel.remove(placeholders[i]);
-			
 		}
 		updatePanel();
 		

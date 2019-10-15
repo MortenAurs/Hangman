@@ -38,7 +38,6 @@ public class Hangman_Main extends JFrame {
 	 */
 	public Hangman_Main() {
 		setResizable(false);
-		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(880, 350, 150, 200);
 		contentPane = new JPanel();
@@ -47,12 +46,10 @@ public class Hangman_Main extends JFrame {
 		GridBagLayout gbl_contentPane = new GridBagLayout();
 		
 		contentPane.setLayout(gbl_contentPane);
-		
 		btnNewGame = new JButton("New game");
 		btnNewGame.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				GameBoard hangman = new GameBoard(frame);
-				
 			}
 		});
 		this.getRootPane().setDefaultButton(btnNewGame);
@@ -72,8 +69,5 @@ public class Hangman_Main extends JFrame {
 		gbc_btnAddWord.gridx = 0;
 		gbc_btnAddWord.gridy = 1;
 		contentPane.add(btnAddWord, gbc_btnAddWord);
-		
-		
 	}
-
 }

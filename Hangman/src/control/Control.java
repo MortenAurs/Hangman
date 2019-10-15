@@ -47,7 +47,7 @@ public class Control {
 		}
 	}
 	
-	// Return arraylist
+	// Returning arraylist
 	public ArrayList<String> getList(){
 		return wordList;
 	}
