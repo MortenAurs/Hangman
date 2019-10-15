@@ -1,0 +1,159 @@
+package morten.Hobbyhuset;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.event.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.swing.*;
+import javax.swing.table.*;
+
+public class OrdreVindu extends JDialog implements ActionListener {
+	private Grensesnitt hovedvindu;
+	private ResultSet res;
+	private ResultSet resKunde;
+	private int sokOrdrenr;
+	private JLabel navn = new JLabel("");
+	private JLabel dato = new JLabel("");
+	private JTextField txtOrdrenr = new JTextField(10);
+	DefaultTableModel ordreinnhold;
+	private JTable ordretabell;
+	private JScrollPane ordrescroll;
+	private final String[] kolonnenavn = {"OrdreNr: ", "Varenr: ", "Pris per enhet: ", "Antall: "};
+	private final Object[][] defaulttabell = new Object[][] {{null, null, null, null},{null, null, null, null}};
+	
+	public OrdreVindu(JFrame forelder) {
+		super(forelder, "Vis ordre", true);
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		setLocation(350,250);
+		setSize(486,515);
+		JPanel panel = new JPanel();
+		panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+		panel.add(new JLabel("Skriv inn ordrenummer: "));
+		panel.add(txtOrdrenr);
+		JButton sok = new JButton("Søk");
+		sok.setPreferredSize(new Dimension(70,19));
+		sok.addActionListener(this);
+		panel.add(sok);
+		add(panel);
+		
+		JPanel kundePanel = new JPanel();
+		kundePanel.setLayout(new BorderLayout());
+		kundePanel.add(navn, BorderLayout.NORTH);
+		kundePanel.add(dato, BorderLayout.SOUTH);
+		panel.add(kundePanel);
+		ordreinnhold = new DefaultTableModel(defaulttabell, kolonnenavn);
+		ordretabell = new JTable(ordreinnhold);
+		ordrescroll = new JScrollPane(ordretabell);
+		panel.add(ordrescroll, BorderLayout.SOUTH);
+		JButton btnAvslutt = new JButton("Avslutt");
+		btnAvslutt.addActionListener(this);
+		add(btnAvslutt, BorderLayout.SOUTH);
+	}
+	
+	public Object[][] lagListe(ResultSet res)throws Exception{
+		Object[][] innhold;
+		int size = 0;
+		if(res != null) {
+			res.last();
+			size = res.getRow();
+			res.beforeFirst();
+		}
+		innhold = new Object[size][4];
+		int teller = 0;
+		try {
+			while(res.next()) {
+				String ordreNr = res.getString(1);
+				String varenr = res.getString(2);
+				String pris = res.getString(3);
+				String antall = res.getString(4);
+				
+				innhold[teller][0] = ordreNr;
+				innhold[teller][1] = varenr;
+				innhold[teller][2] = pris;
+				innhold[teller][3] = antall;
+				teller ++;
+			}	
+		}catch (Exception e) {
+			throw new Exception("Feil i liste");
+		}
+		return innhold;
+	}
+	
+	public void visKundeInfo(ResultSet resKunde) throws SQLException {
+		String fornavn = "";
+		String etternavn = "";
+		String ordredato = "";
+		if(resKunde.next()) {
+			fornavn = resKunde.getString(1);
+			etternavn = resKunde.getString(2);
+			ordredato = resKunde.getString(4);
+			navn.setText("Navn: "+ fornavn + " " + etternavn);
+			dato.setText("Ordredato: " + ordredato);
+		}
+		
+	}
+	
+	public void fyllTabell(ResultSet res)  {
+		Object[][] liste = null;
+		try {
+			liste = lagListe(res);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if(liste != null) {
+			
+			ordretabell.setModel(new DefaultTableModel(liste, kolonnenavn));	
+		}
+		
+	}
+	
+	public void visListe(ResultSet res) throws Exception {
+		fyllTabell(res);
+		setVisible(true);	
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		String kommando = e.getActionCommand();
+		if(kommando.equals("Søk")) {
+			String ordrenr = txtOrdrenr.getText();
+			if(!ordrenr.equals("")) {
+				sokOrdrenr = Integer.parseInt(ordrenr);
+			}else {
+				sokOrdrenr = 0;
+			}
+			hovedvindu = new Grensesnitt();
+			if(sokOrdrenr != 0) {
+				
+				try {
+					res = hovedvindu.finnOrdrelinje(sokOrdrenr);
+					resKunde = hovedvindu.kundeOrdre(sokOrdrenr);
+					fyllTabell(res);
+					visKundeInfo(resKunde);
+					
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}else {
+				try {
+					sokOrdrenr = 0;
+					navn.setText("");
+					dato.setText("");
+					res = hovedvindu.finnOrdrelinje(sokOrdrenr);
+					fyllTabell(res);
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		}else {
+			setVisible(false);
+		}
+
+	}
+
+}

@@ -1,0 +1,79 @@
+package window;
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.border.*;
+
+import file.FileHandler;
+
+import java.awt.event.*;
+
+
+
+public class Hangman_Main extends JFrame {
+	private Hangman hangman = new Hangman(this);
+	private AddWord wordWindow = new AddWord();
+	private JPanel contentPane;
+	private JButton btnNewGame;
+	private JButton btnAddWord;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					
+					Hangman_Main frame = new Hangman_Main();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public Hangman_Main() {
+		setResizable(false);
+		
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(600, 350, 127, 300);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		GridBagLayout gbl_contentPane = new GridBagLayout();
+
+		contentPane.setLayout(gbl_contentPane);
+		
+		btnNewGame = new JButton("New game");
+		btnNewGame.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				hangman.newHangman();
+			}
+		});
+		GridBagConstraints gbc_btnNewGame = new GridBagConstraints();
+		gbc_btnNewGame.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnNewGame.insets = new Insets(0, 0, 5, 0);
+		gbc_btnNewGame.gridx = 0;
+		gbc_btnNewGame.gridy = 0;
+		contentPane.add(btnNewGame, gbc_btnNewGame);
+		
+		btnAddWord = new JButton("Add word");
+		btnAddWord.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				wordWindow.addWord();
+			}
+		});
+		GridBagConstraints gbc_btnAddWord = new GridBagConstraints();
+		gbc_btnAddWord.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnAddWord.gridx = 0;
+		gbc_btnAddWord.gridy = 1;
+		contentPane.add(btnAddWord, gbc_btnAddWord);
+		
+		
+	}
+
+}

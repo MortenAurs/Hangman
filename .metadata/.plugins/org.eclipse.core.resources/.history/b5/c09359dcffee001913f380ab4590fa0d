@@ -1,0 +1,28 @@
+package file;
+
+import java.io.*;
+import java.util.*;
+
+public class File {
+	private Scanner file;
+	private String fileName = "words.csv";
+	private ArrayList<String> wordList = new ArrayList<>();
+	
+	public void readFile() {
+		try {
+            file = new Scanner(new File(fileName));
+            String line = "";
+            while(file.hasNextLine()){
+                line = file.nextLine();
+                wordList.add(line);
+            }
+		}catch (FileNotFoundException e) {
+            System.out.println("File not found");
+            System.exit(0);
+        }
+	}
+	public ArrayList<String> getList(){
+		System.out.println(wordList.size());
+		return wordList;
+	}
+}

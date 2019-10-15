@@ -1,0 +1,69 @@
+package hangman;
+
+import javax.swing.JOptionPane;
+
+public class Answer {
+	private String word;
+	private int[] matchedIndex;
+	private int totalFound = 0;
+	private String[] usedLetters;
+	
+	
+	public Answer(String word) {
+		this.word = word;
+		usedLetters = new String[word.length()];
+	}
+
+
+	public int[] checkLetter(String guessedLetter) {
+		
+		
+		boolean existing = checkRepeatWord(guessedLetter);
+		usedLetters[totalFound] = guessedLetter;
+		matchedIndex = new int[word.length()];
+		int cntMatched = 0;
+		if(!existing) {
+			for(int i = 0; i < word.length(); i++) {
+				if(guessedLetter.equals(String.valueOf(word.charAt(i)))) {
+					cntMatched++;
+					totalFound++;
+					matchedIndex[cntMatched] = i;	
+				}
+				
+				// Sets first value in list to amount of letters found
+				matchedIndex[0] = cntMatched;
+			}
+		}
+		
+		
+		// Checking if the total letters found are same length as the word
+		if(totalFound == word.length()) {
+			JOptionPane.showMessageDialog(null, "Congrats, you found the word!\n"
+					+ "The word was: " + word);
+			return null;
+		}
+		
+		return matchedIndex;
+	}
+
+
+	private boolean checkRepeatWord(String guessedLetter) {
+		
+		
+	
+		for(int i = 0; i < usedLetters.length; i++) {
+			System.out.println(guessedLetter);
+			System.out.println(usedLetters[i]);
+			if(guessedLetter.equals(usedLetters[i])){
+				System.out.println("guess again");
+				return true;
+			}
+		}
+		return false;
+		
+		
+		
+	}
+	
+	
+}

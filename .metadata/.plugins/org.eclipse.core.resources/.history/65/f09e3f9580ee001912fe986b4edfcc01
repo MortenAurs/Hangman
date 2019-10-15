@@ -1,0 +1,130 @@
+package morten.Hobbyhuset;
+
+import java.sql.*;
+
+public class Kontroll {
+	String databasenavn = "jdbc:mysql://localhost:3306/hobbyhuset?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+	String databasedriver = "com.mysql.jdbc.Driver";
+	private Connection forbindelse;
+	private ResultSet resultat;
+	private Statement stmt;
+	private static Kontroll single_instance = null; 
+	
+	public void regVare(Vare vare) throws Exception {
+		if(vare != null) {
+			String varenr = vare.getVnr();
+			String betegnelse = vare.getBetegnelse();
+			double pris = vare.getPris();
+			int antall = vare.getAntall();
+			String hylle = vare.getHylle();
+			int katnr = vare.getKatnr();
+			String sql = "INSERT INTO Vare VALUES('" + varenr + "', '" + betegnelse + "', " + pris + ", " + katnr + ", " + antall + ", '" + hylle + "');";
+			try {
+				lagForbindelse();
+				Statement stmt = forbindelse.createStatement();
+				stmt.executeUpdate(sql);
+			}catch (Exception ex) {throw new Exception("Kan ikke oppdatere vare");}
+		}
+	}
+	
+	// Database til-og-frakobling
+	public void lagForbindelse() throws Exception{
+		try {
+			forbindelse = DriverManager.getConnection(databasenavn, "Morten", "pwd");
+		}catch(Exception e) {
+			throw new Exception("Kan ikke oppnå kontakt med databasen");
+		}
+	}
+	public void lukk() throws Exception{
+		try {
+			if(forbindelse != null) {
+				forbindelse.close();
+				resultat.close();
+				stmt.close();
+			}
+		}catch(Exception e) {
+			throw new Exception("Kan ikke lukke databaseforbindelse");
+		}
+	}
+	
+	public ResultSet finnVarer() throws Exception{
+		resultat = null;
+		try {
+			String sql = "SELECT * \r\n" + 
+					"FROM vare, kategori\r\n" + 
+					"WHERE vare.KatNr = kategori.KatNr;";
+			stmt = forbindelse.createStatement();
+			resultat = stmt.executeQuery(sql);
+		}catch(Exception e) {
+			throw new Exception("Kan ikke utføre spørring");
+		}
+		return resultat;
+	}
+	
+	
+	public ResultSet hentKundeinfo(int kundenr) throws Exception{
+		resultat = null;
+		String sql = "";
+		try {
+			sql = "SELECT * FROM kunde WHERE KNr ="+kundenr+";";
+			stmt = forbindelse.createStatement();
+			resultat = stmt.executeQuery(sql);
+		}catch(Exception e) {
+			throw new Exception("Kan ikke utføre spørring");
+			}
+		return resultat;
+	}
+	
+	public void slettKunde(int kundenr) throws Exception {
+		if(kundenr != 0) {
+			
+			String sql = "UPDATE kunde SET Fornavn = null, Etternavn = null, Adresse = null, Postnr = null, Kjønn = null WHERE KNr = "+kundenr+";";
+			try {
+				lagForbindelse();
+				stmt = forbindelse.createStatement();
+				
+				stmt.executeUpdate(sql);
+			}catch (Exception ex) {throw new Exception("Kan ikke slette kunde i tabell");}
+		}
+	}
+	
+	public ResultSet kundeOrdre(int ordreNr) throws Exception {
+		resultat = null;
+		String sql = "";
+		if (ordreNr != 0) {
+			sql = "SELECT Fornavn, Etternavn, OrdreNr, OrdreDato\r\n" + 
+					"FROM ordre, kunde\r\n" + 
+					"WHERE ordre.KNr = kunde.KNr\r\n" + 
+					"AND OrdreNr = "+ordreNr+";";
+		}
+		lagForbindelse();
+		stmt = forbindelse.createStatement();
+		resultat = stmt.executeQuery(sql);
+		return resultat;
+	}
+	
+	public ResultSet finnOrdrelinje(int sokOrdrenr) throws Exception{
+		resultat = null;
+		String sql = "";
+		try {
+			if(sokOrdrenr != 0) {
+				sql = "SELECT * FROM ordrelinje WHERE OrdreNr="+sokOrdrenr+";";
+				
+			}else {
+				sql = "SELECT * FROM ordrelinje;";
+			}
+			stmt = forbindelse.createStatement();
+			resultat = stmt.executeQuery(sql);
+		}catch(Exception e) {throw new Exception("Kan ikke utføre spørring");}
+		return resultat;
+	}
+	
+	// Singelton kontrollobjekt
+	 public static Kontroll getInstance() 
+	    { 
+	        if (single_instance == null) 
+	            single_instance = new Kontroll(); 
+	  
+	        return single_instance; 
+	    } 
+}
